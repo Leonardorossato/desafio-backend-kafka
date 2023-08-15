@@ -13,11 +13,11 @@ import { CartModule } from './cart/cart.module';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'cart-abandoned',
+            clientId: 'cart',
             brokers: ['localhost:9092'], // Sua configuração de brokers Kafka aqui
           },
           consumer: {
-            groupId: 'cart-abandoned-group',
+            groupId: 'cart-abandoned',
           },
         },
       },
