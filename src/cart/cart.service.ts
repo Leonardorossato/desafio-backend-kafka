@@ -3,5 +3,5 @@ import { CreateCartDto } from './dto/create.cart.dto';
 @Injectable()
 export class CartService {
   constructor() {}
-  async create(dto: CreateCartDto) {}
+  async cartAbandoned() {}
 }
