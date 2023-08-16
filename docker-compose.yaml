@@ -2,17 +2,13 @@ version: '3.8'
 
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    networks: 
-      - broker-kafka
+    image: confluentinc/cp-zookeeper:6.2.1 # Use uma versão específica
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: confluentinc/cp-kafka:latest
-    networks: 
-      - broker-kafka
+    image: confluentinc/cp-kafka:6.2.1 # Use uma versão específica
     depends_on:
       - zookeeper
     ports:
@@ -27,15 +23,9 @@ services:
 
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
-    networks: 
-      - broker-kafka
     depends_on:
       - kafka
     ports:
       - 19000:9000
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
-
-networks: 
-  broker-kafka:
-    driver: bridge 
