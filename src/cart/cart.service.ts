@@ -45,7 +45,7 @@ export class CartService {
       };
       const result = await this.createOpportunity(opportunity);
       await lastValueFrom(this.client.emit('cart-abandoned', result));
-      return result;
+      return { message: result.description };
     } catch (error) {
       throw new Error(`Erro ao processar mensagem: ${error.message}`);
     }
@@ -63,23 +63,23 @@ export class CartService {
     try {
       const id = dto.id;
       const customerName = dto.customer;
-      const abandonedProducts = dto.items.map((item) => ({
+      const items = dto.items.map((item) => ({
         id: item.id,
         name: item.name,
         quantity: item.quantity,
       }));
       const productsMapping = {};
 
-      abandonedProducts.forEach((product) => {
+      items.forEach((product) => {
         const description = `${product.name} (Id: ${product.id}, Quantidade: ${product.quantity})`;
         productsMapping[product.name] = description;
       });
       // Crie os dados da oportunidade
       const opportunityData = {
         id,
-        abandonedProducts,
+        items,
         customerName,
-        description: `Cliente abandonou os produtos: ${abandonedProducts
+        description: `Cliente abandonou os produtos: ${items
           .map((product) => productsMapping[product.name] || `${product.name}`)
           .join(', ')}`,
       };
