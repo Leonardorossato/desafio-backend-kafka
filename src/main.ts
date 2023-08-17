@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Partitioners } from 'kafkajs';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +18,21 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
+  app.connectMicroservice({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'cart-consumer',
+      },
+      producer: {
+        createPartitioner: Partitioners.LegacyPartitioner,
+      },
+    },
+  });
+  await app.startAllMicroservices();
   await app.listen(process.env.APP_PORT);
 }
 void bootstrap();
